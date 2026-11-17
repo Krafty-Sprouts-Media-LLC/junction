@@ -1,0 +1,14 @@
+{
+    "name": "krafty-sprouts/junction-addon-fixture",
+    "type": "teme-plugin",
+    "description": "Test fixture for Junction's CollectEvents hook.",
+    "license": "GPL-2.0-or-later",
+    "require": {
+        "teme/contracts": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "KraftySprouts\\JunctionAddonFixture\\": "src/"
+        }
+    }
+}
