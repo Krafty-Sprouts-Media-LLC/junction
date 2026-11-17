@@ -1,0 +1,20 @@
+{
+    "name": "krafty-sprouts/junction",
+    "type": "teme-plugin",
+    "description": "Junction for TemeCMS: send the site's events to Make, Zapier, n8n, Pipedream or any webhook address.",
+    "license": "GPL-2.0-or-later",
+    "authors": [
+        {
+            "name": "Krafty Sprouts Media, LLC"
+        }
+    ],
+    "require": {
+        "php": "^8.4",
+        "teme/contracts": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "KraftySprouts\\Junction\\": "src/"
+        }
+    }
+}

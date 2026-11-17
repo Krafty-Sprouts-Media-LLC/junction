@@ -1,0 +1,279 @@
+{
+    "manifest": 1,
+    "name": "krafty-sprouts/junction",
+    "code": "junction",
+    "label": "Junction",
+    "description": "Sends the site's events, signed, to Make, Zapier, n8n, Pipedream or any webhook address an administrator adds and agrees to.",
+    "version": "1.0.0",
+    "requires": {
+        "teme": "^1.0"
+    },
+    "plugin": "KraftySprouts\\Junction\\Junction",
+    "capabilities": ["content.read", "media.read", "people.read", "http", "jobs", "notices.send"],
+    "hostsFrom": ["endpoint_urls"],
+    "hooks": [
+        "ContentPublished",
+        "ContentUnpublished",
+        "ContentScheduled",
+        "ContentTrashed",
+        "ContentRestored",
+        "ContentDeleted",
+        "CommentStatusChanged",
+        "MediaStored",
+        "SettingsChanged"
+    ],
+    "jobs": [
+        {"key": "deliver", "label": "Junction: send waiting deliveries", "tries": 1},
+        {"key": "send-test", "label": "Junction: send a test event", "tries": 1},
+        {"key": "prune", "label": "Junction: remove old log entries", "tries": 2}
+    ],
+    "schedules": [
+        {"job": "deliver", "every": "minute"},
+        {"job": "prune", "every": "day"}
+    ],
+    "owns": {
+        "tables": ["junction_endpoints", "junction_events", "junction_deliveries", "junction_attempts"]
+    },
+    "contributes": {
+        "settingsSections": [
+            {"id": "addresses", "label": "Endpoint addresses", "description": "Junction reaches only the hosts you agree to here."},
+            {"id": "delivery", "label": "Delivery", "description": "How hard Junction tries, and how long it keeps its log."}
+        ],
+        "settings": [
+            {
+                "key": "endpoint_urls",
+                "type": "urls",
+                "section": "addresses",
+                "label": "Endpoint addresses",
+                "description": "Every webhook address an endpoint sends to, one a line. Saving a new one asks you to agree to its host; an endpoint can use only an address listed here.",
+                "default": [],
+                "example": "https://hook.eu1.make.com/abc123"
+            },
+            {
+                "key": "max_attempts",
+                "type": "number",
+                "section": "delivery",
+                "label": "Tries for each delivery",
+                "description": "How many times Junction tries a delivery before it marks it failed. The waits between tries grow: 1 minute, 5 minutes, 30 minutes, 2 hours, then 6 hours.",
+                "default": 6,
+                "min": 1,
+                "max": 10
+            },
+            {
+                "key": "pause_after",
+                "type": "number",
+                "section": "delivery",
+                "label": "Pause an endpoint after",
+                "description": "Failed tries in a row after which Junction pauses an endpoint and tells the people who manage plugins. Saving the endpoint again starts it.",
+                "default": 10,
+                "min": 1,
+                "max": 100,
+                "unit": "failures"
+            },
+            {
+                "key": "retention_days",
+                "type": "number",
+                "section": "delivery",
+                "label": "Keep the log for",
+                "description": "Deliveries and their tries older than this are removed once a day.",
+                "default": 30,
+                "min": 1,
+                "max": 365,
+                "unit": "days"
+            }
+        ],
+        "actions": [
+            {"id": "send-test", "label": "Send a test event", "description": "Sends a test event to every endpoint that is on.", "job": "send-test"},
+            {"id": "deliver-now", "label": "Send waiting deliveries now", "description": "Sends what is due without waiting for the next minute.", "job": "deliver"}
+        ],
+        "admin": [
+            {"surface": "tools", "id": "junction-settings", "label": "Junction", "description": "Endpoint addresses and delivery settings.", "icon": "send", "to": "settings"}
+        ],
+        "notices": [
+            {
+                "id": "endpoint_paused",
+                "label": "Tell me when Junction pauses an endpoint that keeps failing",
+                "audience": "plugins.manage",
+                "channels": ["mail", "inbox"],
+                "defaults": ["mail", "inbox"]
+            }
+        ],
+        "hooks": [
+            {
+                "name": "CollectEvents",
+                "class": "KraftySprouts\\Junction\\Hooks\\CollectEvents",
+                "description": "Asks other plugins, once a minute, for events of their own that Junction should send to the endpoints that take them."
+            }
+        ],
+        "permissions": [
+            {"id": "manage", "label": "Manage Junction", "description": "Add, change and remove Junction's endpoints, and read and resend its deliveries.", "roles": []}
+        ],
+        "area": {
+            "label": "Junction",
+            "description": "Where the site's events meet every other app's tracks.",
+            "permission": "manage",
+            "menu": "site",
+            "pages": [
+                {
+                    "id": "overview",
+                    "label": "Overview",
+                    "blocks": [
+                        {
+                            "type": "figures",
+                            "items": [
+                                {"id": "delivered", "label": "Delivered, last 24 hours", "format": "number"},
+                                {"id": "failed", "label": "Failed, last 24 hours", "format": "number"},
+                                {"id": "waiting", "label": "Waiting", "format": "number"},
+                                {"id": "endpoints", "label": "Endpoints on", "format": "number"},
+                                {"id": "paused", "label": "Endpoints paused", "format": "number"}
+                            ]
+                        },
+                        {
+                            "type": "chart",
+                            "label": "Deliveries, last 14 days",
+                            "kind": "bar",
+                            "series": [
+                                {"id": "delivered", "label": "Delivered"},
+                                {"id": "failed", "label": "Failed"}
+                            ]
+                        },
+                        {"type": "actions", "actions": ["send-test", "deliver-now"]}
+                    ]
+                },
+                {
+                    "id": "endpoints",
+                    "label": "Endpoints",
+                    "blocks": [
+                        {
+                            "type": "table",
+                            "record": "endpoint",
+                            "columns": [
+                                {"id": "name", "label": "Name", "kind": "text", "sortable": true},
+                                {"id": "host", "label": "Host", "kind": "text"},
+                                {"id": "events", "label": "Events", "kind": "number"},
+                                {"id": "format", "label": "Format", "kind": "text"},
+                                {"id": "state", "label": "State", "kind": "badge"},
+                                {"id": "failures", "label": "Failures in a row", "kind": "number", "sortable": true}
+                            ],
+                            "search": true,
+                            "perPage": 25,
+                            "rowActions": ["edit", "duplicate", "enable", "disable", "delete"],
+                            "bulkActions": ["enable", "disable", "delete"]
+                        }
+                    ]
+                },
+                {
+                    "id": "log",
+                    "label": "Delivery log",
+                    "blocks": [
+                        {"type": "notice", "text": "Each try is one row. Duplicate a row to send that delivery again; open it to read what was sent and what came back.", "tone": "info"},
+                        {
+                            "type": "table",
+                            "record": "attempt",
+                            "columns": [
+                                {"id": "time", "label": "Time", "kind": "text", "sortable": true},
+                                {"id": "event", "label": "Event", "kind": "text"},
+                                {"id": "endpoint", "label": "Endpoint", "kind": "text"},
+                                {"id": "result", "label": "Result", "kind": "badge"},
+                                {"id": "code", "label": "Status code", "kind": "number"},
+                                {"id": "reply", "label": "Reply", "kind": "text"}
+                            ],
+                            "search": true,
+                            "perPage": 50,
+                            "rowActions": ["edit", "duplicate", "delete"],
+                            "bulkActions": ["duplicate", "delete"]
+                        }
+                    ]
+                }
+            ],
+            "records": [
+                {
+                    "id": "endpoint",
+                    "label": "Endpoint",
+                    "plural": "Endpoints",
+                    "titleField": "name",
+                    "sections": [
+                        {
+                            "id": "where",
+                            "label": "Where it sends",
+                            "fields": [
+                                {"key": "name", "type": "text", "label": "Name", "required": true, "maxLength": 80, "description": "What you call it, such as Make: new posts to Slack."},
+                                {"key": "url", "type": "url", "label": "Address", "required": true, "description": "The webhook address. List it under Settings › Junction first, so you can agree to its host."},
+                                {"key": "enabled", "type": "boolean", "label": "On", "default": true, "description": "Junction sends nothing to an endpoint that is off."},
+                                {"key": "format", "type": "select", "label": "Format", "default": "json", "options": {"json": "JSON (Make, Zapier, n8n, Pipedream)", "slack": "Slack message", "discord": "Discord message", "teams": "Microsoft Teams message", "google_chat": "Google Chat message"}},
+                                {"key": "timeout", "type": "number", "label": "Time limit for each call", "default": 10, "min": 1, "max": 10, "description": "Seconds Junction waits for an answer before it counts the try as failed."}
+                            ]
+                        },
+                        {
+                            "id": "what",
+                            "label": "What it receives",
+                            "fields": [
+                                {"key": "events", "type": "multiselect", "label": "Events", "required": true, "options": {
+                                    "item.published": "An item is published",
+                                    "item.updated": "A published item is updated",
+                                    "item.unpublished": "An item is unpublished",
+                                    "item.scheduled": "An item is scheduled",
+                                    "item.trashed": "An item is moved to the trash",
+                                    "item.restored": "An item is restored from the trash",
+                                    "item.deleted": "An item is deleted for good",
+                                    "comment.received": "A comment is received",
+                                    "comment.approved": "A comment is approved",
+                                    "media.uploaded": "Media is uploaded",
+                                    "settings.changed": "Settings are changed"
+                                }},
+                                {"key": "other_events", "type": "text", "label": "Other plugins' events", "maxLength": 500, "description": "Event names other plugins send through Junction, separated by commas, such as shop.order_placed; or * for all of them."},
+                                {"key": "types", "type": "types", "label": "Only these content types", "description": "Leave empty for every type."},
+                                {"key": "categories", "type": "text", "label": "Only these categories", "maxLength": 500, "description": "Category slugs, separated by commas. Leave empty for every category."},
+                                {"key": "tags", "type": "text", "label": "Only these tags", "maxLength": 500, "description": "Tag slugs, separated by commas. Leave empty for every tag."},
+                                {"key": "fields", "type": "multiselect", "label": "Item fields to send", "description": "Leave empty to send them all.", "options": {
+                                    "id": "ID",
+                                    "type": "Content type",
+                                    "title": "Title",
+                                    "url": "Address",
+                                    "status": "Status",
+                                    "language": "Language",
+                                    "published_at": "Published date",
+                                    "scheduled_for": "Scheduled date",
+                                    "author": "Author's name",
+                                    "excerpt": "Excerpt",
+                                    "featured_image": "Featured image address",
+                                    "terms": "Categories and tags"
+                                }}
+                            ]
+                        },
+                        {
+                            "id": "signing",
+                            "label": "Signing",
+                            "fields": [
+                                {"key": "secret", "type": "text", "label": "Signing secret", "maxLength": 128, "description": "Junction signs every delivery with this secret. Leave it empty and Junction makes one when you save; copy it into the receiving app. Empty it again to make a new one."},
+                                {"key": "send_test", "type": "boolean", "label": "Send a test event when I save", "default": false}
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "id": "attempt",
+                    "label": "Delivery try",
+                    "plural": "Delivery tries",
+                    "titleField": "event",
+                    "sections": [
+                        {
+                            "id": "details",
+                            "label": "What happened",
+                            "fields": [
+                                {"key": "event", "type": "text", "label": "Event"},
+                                {"key": "endpoint", "type": "text", "label": "Endpoint"},
+                                {"key": "delivery", "type": "text", "label": "Delivery ID"},
+                                {"key": "result", "type": "text", "label": "Result"},
+                                {"key": "sent", "type": "textarea", "label": "What was sent"},
+                                {"key": "reply", "type": "textarea", "label": "What came back"}
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    },
+    "author": "Krafty Sprouts Media, LLC",
+    "license": "GPL-2.0-or-later"
+}
