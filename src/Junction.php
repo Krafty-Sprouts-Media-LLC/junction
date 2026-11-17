@@ -97,7 +97,7 @@ final class Junction implements HasPluginArea, Plugin, PluginHasJobs
     public function jobs(): array
     {
         return [
-            'deliver' => new DeliverJob($this->dispatcher(), $this->sender(), $this->hookSender, $this->events),
+            'deliver' => new DeliverJob($this->dispatcher(), $this->sender(), $this->hookSender, new EventRecorder($this->endpoints, $this->events)),
             'send-test' => new SendTestJob($this->endpoints, $this->deliveries, $this->site, $this->sender()),
             'prune' => new PruneJob($this->deliveries, $this->settings),
         ];

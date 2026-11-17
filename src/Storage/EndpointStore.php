@@ -235,10 +235,10 @@ final class EndpointStore
         $total = (clone $query)->count();
         $column = match ($sort) {
             'failures' => 'consecutive_failures',
-            'name' => 'name',
+            'name' => 'lower(name)',
             default => 'created_at',
         };
-        $rows = $query->orderBy($column, $direction)->orderBy('id')->forPage($page, $perPage)->get()->all();
+        $rows = $query->orderByRaw($column.' '.($direction === 'desc' ? 'desc' : 'asc'))->orderBy('id')->forPage($page, $perPage)->get()->all();
 
         return ['rows' => array_values(array_map($this->endpoint(...), $rows)), 'total' => $total];
     }
