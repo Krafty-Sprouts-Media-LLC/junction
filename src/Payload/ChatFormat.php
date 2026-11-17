@@ -82,6 +82,7 @@ final class ChatFormat
                     ],
                 ]],
             ],
+            default => $payload,
         };
     }
 

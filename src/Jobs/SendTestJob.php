@@ -54,7 +54,7 @@ final readonly class SendTestJob implements JobHandler
     {
         $only = $context->payload()['endpoint'] ?? null;
         $endpoints = is_string($only)
-            ? array_values(array_filter([$this->endpoints->find($only)]))
+            ? array_filter([$this->endpoints->find($only)])
             : $this->endpoints->active();
 
         $ids = array_map(fn (Endpoint $endpoint): string => $this->queueTest($endpoint), $endpoints);

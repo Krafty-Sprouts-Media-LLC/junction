@@ -17,6 +17,7 @@ namespace KraftySprouts\Junction\Tests\Support;
 
 use KraftySprouts\Junction\Endpoints\Endpoint;
 use KraftySprouts\Junction\Storage\EndpointStore;
+use LogicException;
 use Teme\Testing\PluginUnderTest;
 
 /**
@@ -69,7 +70,7 @@ final class Junctions
             ...$overrides,
         ]);
 
-        return $store->find($id) ?? throw new \LogicException('The endpoint was not saved.');
+        return $store->find($id) ?? throw new LogicException('The endpoint was not saved.');
     }
 
     /**

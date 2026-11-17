@@ -15,6 +15,7 @@
  */
 
 declare(strict_types=1);
+use Composer\Autoload\ClassLoader;
 
 $teme = getenv('TEME_DEV_PATH') ?: dirname(__DIR__, 2).'/teme-dev';
 
@@ -23,7 +24,7 @@ if (! is_file($teme.'/vendor/autoload.php')) {
     exit(1);
 }
 
-/** @var Composer\Autoload\ClassLoader $loader */
+/** @var ClassLoader $loader */
 $loader = require $teme.'/vendor/autoload.php';
 $loader->addPsr4('KraftySprouts\\Junction\\', dirname(__DIR__).'/src/');
 $loader->addPsr4('KraftySprouts\\Junction\\Tests\\', __DIR__.'/');

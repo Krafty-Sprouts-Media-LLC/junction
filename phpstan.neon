@@ -1,0 +1,12 @@
+# Junction's static analysis, at level 6 as Teme's own plugins are, using
+# the development site's Larastan. Run from this folder:
+#   php ../teme-dev/vendor/bin/phpstan analyse -c phpstan.neon --memory-limit=1G
+includes:
+    - ../teme-dev/vendor/larastan/larastan/extension.neon
+
+parameters:
+    level: 6
+    paths:
+        - src
+        - database
+    tmpDir: .phpstan

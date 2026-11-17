@@ -110,7 +110,7 @@ final class Junction implements HasPluginArea, Plugin, PluginHasJobs
      */
     public function pluginArea(): PluginArea
     {
-        return new JunctionArea($this->endpoints, $this->deliveries, $this->events, $this->settings, $this->site, $this->jobs);
+        return new JunctionArea($this->endpoints, $this->deliveries, $this->events, $this->settings, $this->jobs);
     }
 
     /**

@@ -152,7 +152,7 @@ it('sends the names of changed settings, never their values', function (): void 
     $body = $this->fake->sent(Junctions::HOST)[0]->json();
     expect($body['event'])->toBe('settings.changed')
         ->and($body['data']['settings'])->toBe(['group' => 'plugin.junction', 'keys' => ['retention_days']])
-        ->and($this->fake->sent(Junctions::HOST)[0]->body)->not->toContain('12');
+        ->and($this->fake->sent(Junctions::HOST)[0]->body)->not->toContain('"retention_days":');
 });
 
 it('sends a chat app its own simple message', function (string $format, string $key): void {

@@ -39,7 +39,6 @@ use Teme\Contracts\Jobs\Jobs;
 use Teme\Contracts\Jobs\QueueOptions;
 use Teme\Contracts\Lists\Cell;
 use Teme\Contracts\Settings\SettingsReader;
-use Teme\Contracts\Site\SiteInfo;
 
 /**
  * Core draws every screen; this class hands it rows, figures and values,
@@ -73,7 +72,6 @@ final readonly class JunctionArea implements PluginArea
         private DeliveryStore $deliveries,
         private EventStore $events,
         private SettingsReader $settings,
-        private SiteInfo $site,
         private Jobs $jobs,
     ) {}
 
@@ -201,7 +199,7 @@ final readonly class JunctionArea implements PluginArea
      */
     public function act(string $record, string $action, array $ids, AreaContext $context): Saved
     {
-        $ids = array_values(array_slice($ids, 0, 100));
+        $ids = array_slice($ids, 0, 100);
 
         if ($ids === []) {
             throw new WriteRefused(__('Choose at least one row.'));

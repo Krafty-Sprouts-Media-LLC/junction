@@ -37,7 +37,6 @@ beforeEach(function (): void {
         new DeliveryStore,
         new EventStore,
         FakeDoors::settings(['endpoint_urls' => [Junctions::URL]]),
-        FakeDoors::site(),
         $this->jobs,
     );
     $this->context = new AreaContext('1', 'en', 'UTC', ['manage']);

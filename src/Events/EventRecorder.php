@@ -15,7 +15,9 @@ declare(strict_types=1);
 
 namespace KraftySprouts\Junction\Events;
 
+use DateTimeImmutable;
 use DateTimeInterface;
+use DateTimeZone;
 use KraftySprouts\Junction\Storage\EndpointStore;
 use KraftySprouts\Junction\Storage\EventStore;
 use Teme\Contracts\Comments\CommentStatusChanged;
@@ -108,7 +110,7 @@ final readonly class EventRecorder
 
         $hooks->on(SettingsChanged::class, function (SettingsChanged $hook): void {
             // Names only, never values: the hook carries none, and Junction asks for none.
-            $this->record(EventNames::SETTINGS_CHANGED, ['settings' => ['group' => $hook->group, 'keys' => array_values($hook->keys)]]);
+            $this->record(EventNames::SETTINGS_CHANGED, ['settings' => ['group' => $hook->group, 'keys' => $hook->keys]]);
         });
     }
 
@@ -153,6 +155,6 @@ final readonly class EventRecorder
      */
     public static function time(DateTimeInterface $moment): string
     {
-        return \DateTimeImmutable::createFromInterface($moment)->setTimezone(new \DateTimeZone('UTC'))->format('Y-m-d\TH:i:s\Z');
+        return DateTimeImmutable::createFromInterface($moment)->setTimezone(new DateTimeZone('UTC'))->format('Y-m-d\TH:i:s\Z');
     }
 }

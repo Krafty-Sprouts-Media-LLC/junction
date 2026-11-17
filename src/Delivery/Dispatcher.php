@@ -15,6 +15,7 @@ declare(strict_types=1);
 
 namespace KraftySprouts\Junction\Delivery;
 
+use Carbon\CarbonImmutable;
 use KraftySprouts\Junction\Endpoints\Endpoint;
 use KraftySprouts\Junction\Events\EventNames;
 use KraftySprouts\Junction\Payload\ChatFormat;
@@ -71,7 +72,7 @@ final readonly class Dispatcher
     /**
      * Makes one event's deliveries.
      *
-     * @param  array{row: int, id: string, event: string, data: array<string, mixed>, occurred_at: \Carbon\CarbonImmutable}  $event
+     * @param  array{row: int, id: string, event: string, data: array<string, mixed>, occurred_at: CarbonImmutable}  $event
      * @param  list<Endpoint>  $takers
      *
      * @since 1.0.0
