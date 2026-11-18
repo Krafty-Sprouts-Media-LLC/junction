@@ -44,7 +44,6 @@ beforeEach(function (): void {
         'name' => 'Make: new posts',
         'url' => Junctions::URL,
         'enabled' => true,
-        'format' => 'json',
         'timeout' => 10,
         'events' => ['item.published'],
         'other_events' => '',

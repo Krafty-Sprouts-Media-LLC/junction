@@ -154,19 +154,3 @@ it('sends the names of changed settings, never their values', function (): void 
         ->and($body['data']['settings'])->toBe(['group' => 'plugin.junction', 'keys' => ['retention_days']])
         ->and($this->fake->sent(Junctions::HOST)[0]->body)->not->toContain('"retention_days":');
 });
-
-it('sends a chat app its own simple message', function (string $format, string $key): void {
-    Junctions::endpoint(['format' => $format]);
-    $this->publish('Chatty');
-
-    $this->junction->runJob('deliver');
-
-    $body = $this->fake->sent(Junctions::HOST)[0]->json();
-    $text = $format === 'teams' ? $body['attachments'][0]['content']['body'][0]['text'] : $body[$key];
-    expect($text)->toContain('Chatty');
-})->with([
-    'Slack' => ['slack', 'text'],
-    'Discord' => ['discord', 'content'],
-    'Google Chat' => ['google_chat', 'text'],
-    'Microsoft Teams' => ['teams', 'attachments'],
-]);

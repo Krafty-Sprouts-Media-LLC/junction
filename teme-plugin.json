@@ -278,11 +278,6 @@
                                     "kind": "number"
                                 },
                                 {
-                                    "id": "format",
-                                    "label": "Format",
-                                    "kind": "text"
-                                },
-                                {
                                     "id": "state",
                                     "label": "State",
                                     "kind": "badge"
@@ -405,19 +400,6 @@
                                     "label": "On",
                                     "default": true,
                                     "description": "Junction sends nothing to an endpoint that is off."
-                                },
-                                {
-                                    "key": "format",
-                                    "type": "select",
-                                    "label": "Format",
-                                    "default": "json",
-                                    "options": {
-                                        "json": "JSON (Make, Zapier, n8n, Pipedream)",
-                                        "slack": "Slack message",
-                                        "discord": "Discord message",
-                                        "teams": "Microsoft Teams message",
-                                        "google_chat": "Google Chat message"
-                                    }
                                 },
                                 {
                                     "key": "timeout",

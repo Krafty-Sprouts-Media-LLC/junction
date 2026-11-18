@@ -20,7 +20,6 @@ use KraftySprouts\Junction\Endpoints\Endpoint;
 use KraftySprouts\Junction\Endpoints\SecretBox;
 use KraftySprouts\Junction\Events\EventNames;
 use KraftySprouts\Junction\Junction;
-use KraftySprouts\Junction\Payload\ChatFormat;
 use KraftySprouts\Junction\Payload\PayloadBuilder;
 use KraftySprouts\Junction\Storage\DeliveryStore;
 use KraftySprouts\Junction\Storage\EndpointStore;
@@ -138,7 +137,6 @@ final readonly class JunctionArea implements PluginArea
                 'name' => $endpoint->name,
                 'url' => $endpoint->url,
                 'enabled' => $endpoint->enabled,
-                'format' => $endpoint->format,
                 'timeout' => $endpoint->timeout,
                 'events' => $endpoint->events,
                 'other_events' => implode(', ', $endpoint->otherEvents),
@@ -286,14 +284,14 @@ final readonly class JunctionArea implements PluginArea
             throw new WriteRefused(__('Choose at least one event.'));
         }
 
-        $format = (string) ($values['format'] ?? $current->format ?? ChatFormat::JSON);
         $secret = trim((string) ($values['secret'] ?? $current->secret ?? ''));
 
         return [
             'name' => mb_substr($name, 0, 80),
             'url' => $url,
             'enabled' => (bool) ($values['enabled'] ?? $current->enabled ?? true),
-            'format' => in_array($format, ChatFormat::ALL, true) ? $format : ChatFormat::JSON,
+            // 1.0.0 sends JSON only; chat apps' formats are planned for 1.1 (ROADMAP.md).
+            'format' => 'json',
             'timeout' => max(1, min(10, (int) ($values['timeout'] ?? $current->timeout ?? 10))),
             'events' => $events,
             'other_events' => $other,
@@ -345,7 +343,6 @@ final readonly class JunctionArea implements PluginArea
             'name' => Cell::text($endpoint->name),
             'host' => Cell::text($endpoint->host()),
             'events' => Cell::number(count($endpoint->events) + count($endpoint->otherEvents)),
-            'format' => Cell::text($endpoint->format),
             'state' => $state,
             'failures' => Cell::number($endpoint->failures),
         ], $endpoint->enabled && $endpoint->pausedAt === null ? ['enable'] : ($endpoint->enabled ? [] : ['disable']));

@@ -18,7 +18,6 @@ namespace KraftySprouts\Junction\Delivery;
 use Carbon\CarbonImmutable;
 use KraftySprouts\Junction\Endpoints\Endpoint;
 use KraftySprouts\Junction\Events\EventNames;
-use KraftySprouts\Junction\Payload\ChatFormat;
 use KraftySprouts\Junction\Payload\ItemDetails;
 use KraftySprouts\Junction\Payload\PayloadBuilder;
 use KraftySprouts\Junction\Storage\DeliveryStore;
@@ -108,7 +107,7 @@ final readonly class Dispatcher
                 continue;
             }
 
-            $body = ChatFormat::body(PayloadBuilder::pick($payload, $endpoint->fields), $endpoint->format);
+            $body = PayloadBuilder::pick($payload, $endpoint->fields);
             $this->deliveries->create($endpoint->id, $event['event'], $event['id'], $body);
             $made++;
         }

@@ -41,7 +41,7 @@ it('sends a scheduled publish to the endpoint as the administrator who enabled J
 
 it('sends a signed test event to each endpoint that is on', function (): void {
     Junctions::endpoint(['name' => 'One']);
-    Junctions::endpoint(['name' => 'Two', 'format' => 'slack']);
+    Junctions::endpoint(['name' => 'Two']);
     Junctions::endpoint(['name' => 'Off', 'enabled' => false]);
 
     expect($this->junction->runJob('send-test')->state)->toBe('finished');
@@ -50,7 +50,7 @@ it('sends a signed test event to each endpoint that is on', function (): void {
     expect($sent)->toHaveCount(2)
         ->and($sent[0]->json()['event'])->toBe('junction.test')
         ->and($sent[0]->headers['X-Junction-Signature'][0])->toStartWith('sha256=')
-        ->and($sent[1]->json()['text'])->toContain('this endpoint works');
+        ->and($sent[1]->json()['data']['message'])->toContain('this endpoint works');
 });
 
 it('sends a test to one endpoint when the job names it', function (): void {

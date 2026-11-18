@@ -19,7 +19,6 @@ use Carbon\CarbonImmutable;
 use KraftySprouts\Junction\Delivery\Sender;
 use KraftySprouts\Junction\Endpoints\Endpoint;
 use KraftySprouts\Junction\Events\EventNames;
-use KraftySprouts\Junction\Payload\ChatFormat;
 use KraftySprouts\Junction\Payload\PayloadBuilder;
 use KraftySprouts\Junction\Storage\DeliveryStore;
 use KraftySprouts\Junction\Storage\EndpointStore;
@@ -84,6 +83,6 @@ final readonly class SendTestJob implements JobHandler
             $this->site->address(),
         );
 
-        return $this->deliveries->create($endpoint->id, EventNames::TEST, $eventId, ChatFormat::body($payload, $endpoint->format));
+        return $this->deliveries->create($endpoint->id, EventNames::TEST, $eventId, $payload);
     }
 }
