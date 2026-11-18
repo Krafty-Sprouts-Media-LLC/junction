@@ -23,7 +23,6 @@ use KraftySprouts\Junction\Junction;
 use KraftySprouts\Junction\Storage\DeliveryStore;
 use KraftySprouts\Junction\Storage\EndpointStore;
 use KraftySprouts\Junction\Storage\EventStore;
-use KraftySprouts\Junction\Support\Ids;
 use Teme\Contracts\Admin\AreaContext;
 use Teme\Contracts\Admin\Chart;
 use Teme\Contracts\Admin\Figure;
@@ -61,9 +60,6 @@ final readonly class JunctionArea implements PluginArea
      */
     public const array MANIFEST_HOSTS = ['hooks.zapier.com'];
 
-    /** Days the overview's chart covers. @since 1.0.0 */
-    public const int CHART_DAYS = 14;
-
     /** @since 1.0.0 */
     public function __construct(
         private EndpointStore $endpoints,
@@ -93,15 +89,13 @@ final readonly class JunctionArea implements PluginArea
     }
 
     /**
-     * The overview's chart: delivered and failed, each day.
+     * Junction declares no chart in 1.0.0 (ROADMAP.md), so core never asks.
      *
      * @since 1.0.0
      */
     public function chart(string $page, string $block, AreaContext $context): Chart
     {
-        $daily = $this->deliveries->daily(self::CHART_DAYS, $context->timezone);
-
-        return new Chart($daily['labels'], ['delivered' => $daily['delivered'], 'failed' => $daily['failed']]);
+        return new Chart([], []);
     }
 
     /**
@@ -138,7 +132,6 @@ final readonly class JunctionArea implements PluginArea
                 'enabled' => $endpoint->enabled,
                 'timeout' => $endpoint->timeout,
                 'events' => $endpoint->events,
-                'other_events' => implode(', ', $endpoint->otherEvents),
                 'types' => $endpoint->types,
                 'secret' => $endpoint->secret,
                 'send_test' => false,
@@ -268,15 +261,9 @@ final readonly class JunctionArea implements PluginArea
         }
 
         $events = array_values(array_intersect(array_map(strval(...), (array) ($values['events'] ?? $current->events ?? [])), EventNames::builtIn()));
-        $other = Ids::splitList($values['other_events'] ?? $current->otherEvents ?? []);
+        $other = $current->otherEvents ?? [];
 
-        foreach ($other as $event) {
-            if ($event !== '*' && ! EventNames::isOtherPluginEvent($event)) {
-                throw new WriteRefused(__('“:event” isn’t an event name another plugin can send: use its prefix, a dot and a name, such as shop.order_placed.', ['event' => $event]));
-            }
-        }
-
-        if ($events === [] && $other === []) {
+        if ($events === []) {
             throw new WriteRefused(__('Choose at least one event.'));
         }
 
@@ -290,6 +277,7 @@ final readonly class JunctionArea implements PluginArea
             'format' => 'json',
             'timeout' => max(1, min(10, (int) ($values['timeout'] ?? $current->timeout ?? 10))),
             'events' => $events,
+            // Other plugins' events arrive in 1.2 (ROADMAP.md); a row keeps what it has.
             'other_events' => $other,
             'types' => array_values(array_map(strval(...), (array) ($values['types'] ?? $current->types ?? []))),
             // The form offers no field picker or category and tag filters until 1.1 (ROADMAP.md); the engine keeps them.

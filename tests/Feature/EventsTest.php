@@ -1,8 +1,7 @@
 <?php
 
 /**
- * Which hook becomes which event, for the hooks the kit can't fire itself,
- * and other plugins' events through junction:CollectEvents.
+ * Which hook becomes which event, for the hooks the kit can't fire itself.
  *
  * @package   KraftySprouts\Junction
  * @author    Krafty Sprouts Media, LLC
@@ -17,7 +16,6 @@ use KraftySprouts\Junction\Events\EventRecorder;
 use KraftySprouts\Junction\Storage\EndpointStore;
 use KraftySprouts\Junction\Storage\EventStore;
 use KraftySprouts\Junction\Tests\Support\Junctions;
-use KraftySprouts\JunctionAddonFixture\AddonFixture;
 use Teme\Contracts\Comments\CommentStatusChanged;
 use Teme\Contracts\Content\ContentDeleted;
 use Teme\Contracts\Content\ContentRestored;
@@ -28,7 +26,6 @@ use Teme\Contracts\Hooks\Order;
 use Teme\Contracts\Hooks\Subscription;
 use Teme\Contracts\Media\MediaRef;
 use Teme\Contracts\Media\MediaStored;
-use Teme\Testing\SentRequest;
 use Teme\Testing\TemeTestCase;
 
 uses(TemeTestCase::class);
@@ -103,22 +100,4 @@ it('turns scheduling, restoring and deleting into their events', function (): vo
     expect(array_column($events, 'event'))->toBe(['item.scheduled', 'item.restored', 'item.deleted'])
         ->and($events[0]['data']['scheduled_for'])->toBe('2026-12-01T09:30:00Z')
         ->and($events[2]['data']['item'])->toBe(['id' => '01jtestitem0000000000000000', 'type' => 'post', 'title' => 'Hooked']);
-});
-
-it('sends another plugin\'s events to the endpoints that take them, and drops malformed ones', function (): void {
-    $this->plugin(__DIR__.'/../Fixtures/junction-addon')->enable();
-    Junctions::endpoint(['events' => [], 'other_events' => ['addonfix.order_placed']]);
-    AddonFixture::$outbox = [
-        ['event' => 'addonfix.order_placed', 'data' => ['order' => 42]],
-        ['event' => 'item.published', 'data' => ['spoof' => true]],
-        ['event' => 'addonfix.ignored', 'data' => []],
-        ['event' => 'Not A Name', 'data' => []],
-    ];
-
-    $this->junction->runJob('deliver');
-
-    $sent = array_map(fn (SentRequest $request): array => $request->json(), $this->fake->sent(Junctions::HOST));
-    expect($sent)->toHaveCount(1)
-        ->and($sent[0]['event'])->toBe('addonfix.order_placed')
-        ->and($sent[0]['data'])->toBe(['source' => 'addonfix', 'order' => 42]);
 });

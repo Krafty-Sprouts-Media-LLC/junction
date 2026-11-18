@@ -28,7 +28,6 @@ if (! is_file($teme.'/vendor/autoload.php')) {
 $loader = require $teme.'/vendor/autoload.php';
 $loader->addPsr4('KraftySprouts\\Junction\\', dirname(__DIR__).'/src/');
 $loader->addPsr4('KraftySprouts\\Junction\\Tests\\', __DIR__.'/');
-$loader->addPsr4('KraftySprouts\\JunctionAddonFixture\\', __DIR__.'/Fixtures/junction-addon/src/');
 
 /**
  * The folder holding Junction's teme-plugin.json, for the kit's plugin().

@@ -22,7 +22,6 @@ use KraftySprouts\Junction\Storage\EventStore;
 use KraftySprouts\Junction\Tests\Support\FakeDoors;
 use KraftySprouts\Junction\Tests\Support\Junctions;
 use Teme\Contracts\Admin\AreaContext;
-use Teme\Contracts\Admin\Chart;
 use Teme\Contracts\Admin\TableQuery;
 use Teme\Contracts\Content\WriteRefused;
 use Teme\Testing\TemeTestCase;
@@ -46,7 +45,6 @@ beforeEach(function (): void {
         'enabled' => true,
         'timeout' => 10,
         'events' => ['item.published'],
-        'other_events' => '',
         'types' => [],
         'secret' => '',
         'send_test' => false,
@@ -64,16 +62,10 @@ it('saves a new endpoint with a fresh secret, kept encrypted', function (): void
         ->and(DB::table(EndpointStore::TABLE)->value('secret'))->not->toContain($values['secret']);
 });
 
-it('keeps a secret typed in, and splits typed lists', function (): void {
-    $saved = $this->area->save('endpoint', null, ($this->form)([
-        'secret' => 'my-own-made-up-secret-for-tests',
-        'other_events' => 'shop.order_placed, *',
-    ]), $this->context);
+it('keeps a secret typed in', function (): void {
+    $saved = $this->area->save('endpoint', null, ($this->form)(['secret' => 'my-own-made-up-secret-for-tests']), $this->context);
 
-    $endpoint = (new EndpointStore)->find($saved->id);
-    expect($endpoint->secret)->toBe('my-own-made-up-secret-for-tests')
-        ->and($endpoint->categories)->toBe([])
-        ->and($endpoint->otherEvents)->toBe(['shop.order_placed', '*']);
+    expect((new EndpointStore)->find($saved->id)->secret)->toBe('my-own-made-up-secret-for-tests');
 });
 
 it('refuses an address whose host was not agreed to', function (): void {
@@ -83,10 +75,6 @@ it('refuses an address whose host was not agreed to', function (): void {
 it('refuses an address that is not https', function (): void {
     $this->area->save('endpoint', null, ($this->form)(['url' => 'http://hooks.example.com/junction-test']), $this->context);
 })->throws(WriteRefused::class, 'https');
-
-it('refuses an event name another plugin could not send', function (): void {
-    $this->area->save('endpoint', null, ($this->form)(['other_events' => 'item.sneaky']), $this->context);
-})->throws(WriteRefused::class);
 
 it('queues a test to the endpoint when asked on save', function (): void {
     $saved = $this->area->save('endpoint', null, ($this->form)(['send_test' => true]), $this->context);
@@ -163,14 +151,11 @@ it('refuses to change a try', function (): void {
     $this->area->save('attempt', '1', [], $this->context);
 })->throws(WriteRefused::class);
 
-it('answers the overview figures and chart', function (): void {
+it('answers the overview figures', function (): void {
     Junctions::endpoint();
 
     $figures = $this->area->figures('overview', '0', $this->context);
-    $chart = $this->area->chart('overview', '1', $this->context);
 
     expect($figures['endpoints']->value)->toBe(1)
-        ->and($figures['waiting']->value)->toBe(0)
-        ->and($chart)->toBeInstanceOf(Chart::class)
-        ->and($chart->labels)->toHaveCount(14);
+        ->and($figures['waiting']->value)->toBe(0);
 });

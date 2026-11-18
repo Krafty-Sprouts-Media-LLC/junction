@@ -12,7 +12,6 @@
     "An item is restored from the trash": "An item is restored from the trash",
     "An item is scheduled": "An item is scheduled",
     "An item is unpublished": "An item is unpublished",
-    "Asks other plugins, once a minute, for events of their own that Junction should send to the endpoints that take them.": "Asks other plugins, once a minute, for events of their own that Junction should send to the endpoints that take them.",
     "Choose at least one event.": "Choose at least one event.",
     "Choose at least one row.": "Choose at least one row.",
     "Delivered": "Delivered",
@@ -20,7 +19,6 @@
     "Delivered, last 24 hours": "Delivered, last 24 hours",
     "Deliveries and their tries older than this are removed once a day.": "Deliveries and their tries older than this are removed once a day.",
     "Deliveries to it wait. Check the receiving app, then open the endpoint in Junction and save it to start it again.": "Deliveries to it wait. Check the receiving app, then open the endpoint in Junction and save it to start it again.",
-    "Deliveries, last 14 days": "Deliveries, last 14 days",
     "Delivery": "Delivery",
     "Delivery ID": "Delivery ID",
     "Delivery log": "Delivery log",
@@ -34,7 +32,6 @@
     "Endpoints on": "Endpoints on",
     "Endpoints paused": "Endpoints paused",
     "Event": "Event",
-    "Event names other plugins send through Junction, separated by commas, such as shop.order_placed; or * for all of them.": "Event names other plugins send through Junction, separated by commas, such as shop.order_placed; or * for all of them.",
     "Events": "Events",
     "Every webhook address an endpoint sends to, one a line. Saving a new one asks you to agree to its host; an endpoint can use only an address listed here.": "Every webhook address an endpoint sends to, one a line. Saving a new one asks you to agree to its host; an endpoint can use only an address listed here.",
     "Failed": "Failed",
@@ -43,7 +40,6 @@
     "Failed tries in a row after which Junction pauses an endpoint and tells the people who manage plugins. Saving the endpoint again starts it.": "Failed tries in a row after which Junction pauses an endpoint and tells the people who manage plugins. Saving the endpoint again starts it.",
     "Failed, last 24 hours": "Failed, last 24 hours",
     "Failures in a row": "Failures in a row",
-    "Gathering other plugins’ events": "Gathering other plugins’ events",
     "Give the endpoint a name.": "Give the endpoint a name.",
     "Host": "Host",
     "How hard Junction tries, and how long it keeps its log.": "How hard Junction tries, and how long it keeps its log.",
@@ -72,7 +68,6 @@
     "On": "On",
     "Only these content types": "Only these content types",
     "Open Junction": "Open Junction",
-    "Other plugins' events": "Other plugins' events",
     "Overview": "Overview",
     "Pause an endpoint after": "Pause an endpoint after",
     "Paused": "Paused",
@@ -114,6 +109,5 @@
     "days": "days",
     "failures": "failures",
     "{0} No endpoint is on.|{1} Sent one test event.|[2,*] Sent :count test events.": "{0} No endpoint is on.|{1} Sent one test event.|[2,*] Sent :count test events.",
-    "{0} Nothing was due.|{1} Tried one delivery.|[2,*] Tried :count deliveries.": "{0} Nothing was due.|{1} Tried one delivery.|[2,*] Tried :count deliveries.",
-    "“:event” isn’t an event name another plugin can send: use its prefix, a dot and a name, such as shop.order_placed.": "“:event” isn’t an event name another plugin can send: use its prefix, a dot and a name, such as shop.order_placed."
+    "{0} Nothing was due.|{1} Tried one delivery.|[2,*] Tried :count deliveries.": "{0} Nothing was due.|{1} Tried one delivery.|[2,*] Tried :count deliveries."
 }

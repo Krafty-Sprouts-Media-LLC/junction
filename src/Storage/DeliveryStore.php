@@ -269,45 +269,6 @@ final class DeliveryStore
     }
 
     /**
-     * Delivered and failed deliveries for each of the last $days days, in
-     * the time zone given, oldest first.
-     *
-     * @return array{labels: list<string>, delivered: list<int>, failed: list<int>}
-     *
-     * @since 1.0.0
-     */
-    public function daily(int $days, string $timezone): array
-    {
-        $today = CarbonImmutable::now($timezone)->startOfDay();
-        $start = $today->subDays($days - 1);
-        $labels = [];
-        $delivered = [];
-        $failed = [];
-
-        $rows = DB::table(self::TABLE)
-            ->whereIn('status', [self::DELIVERED, self::FAILED])
-            ->where('updated_at', '>=', $start->utc())
-            ->get(['status', 'updated_at'])
-            ->all();
-
-        $tally = [];
-
-        foreach ($rows as $row) {
-            $day = CarbonImmutable::parse((string) $row->updated_at)->setTimezone($timezone)->format('Y-m-d');
-            $tally[$day][(string) $row->status] = ($tally[$day][(string) $row->status] ?? 0) + 1;
-        }
-
-        for ($day = $start; $day <= $today; $day = $day->addDay()) {
-            $key = $day->format('Y-m-d');
-            $labels[] = $key;
-            $delivered[] = $tally[$key][self::DELIVERED] ?? 0;
-            $failed[] = $tally[$key][self::FAILED] ?? 0;
-        }
-
-        return ['labels' => $labels, 'delivered' => $delivered, 'failed' => $failed];
-    }
-
-    /**
      * Removes tries, and finished deliveries, older than $days days.
      *
      * @return array{deliveries: int, attempts: int}

@@ -164,13 +164,6 @@
                 ]
             }
         ],
-        "hooks": [
-            {
-                "name": "CollectEvents",
-                "class": "KraftySprouts\\Junction\\Hooks\\CollectEvents",
-                "description": "Asks other plugins, once a minute, for events of their own that Junction should send to the endpoints that take them."
-            }
-        ],
         "permissions": [
             {
                 "id": "manage",
@@ -223,22 +216,6 @@
                                     "id": "paused",
                                     "label": "Endpoints paused",
                                     "format": "number"
-                                }
-                            ]
-                        },
-                        {
-                            "id": "daily",
-                            "type": "chart",
-                            "label": "Deliveries, last 14 days",
-                            "kind": "bar",
-                            "series": [
-                                {
-                                    "id": "delivered",
-                                    "label": "Delivered"
-                                },
-                                {
-                                    "id": "failed",
-                                    "label": "Failed"
                                 }
                             ]
                         },
@@ -434,13 +411,6 @@
                                         "media.uploaded": "Media is uploaded",
                                         "settings.changed": "Settings are changed"
                                     }
-                                },
-                                {
-                                    "key": "other_events",
-                                    "type": "text",
-                                    "label": "Other plugins' events",
-                                    "maxLength": 500,
-                                    "description": "Event names other plugins send through Junction, separated by commas, such as shop.order_placed; or * for all of them."
                                 },
                                 {
                                     "key": "types",

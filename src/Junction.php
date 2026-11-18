@@ -31,7 +31,6 @@ use Teme\Contracts\Admin\HasPluginArea;
 use Teme\Contracts\Admin\PluginArea;
 use Teme\Contracts\Content\ContentReader;
 use Teme\Contracts\Hooks\Hooks;
-use Teme\Contracts\Hooks\HookSender;
 use Teme\Contracts\Http\OutboundHttp;
 use Teme\Contracts\Jobs\Jobs;
 use Teme\Contracts\Jobs\PluginHasJobs;
@@ -72,7 +71,6 @@ final class Junction implements HasPluginArea, Plugin, PluginHasJobs
         private readonly OutboundHttp $http,
         private readonly Jobs $jobs,
         private readonly Notices $notices,
-        private readonly HookSender $hookSender,
     ) {
         $this->endpoints = new EndpointStore;
         $this->events = new EventStore;
@@ -97,7 +95,7 @@ final class Junction implements HasPluginArea, Plugin, PluginHasJobs
     public function jobs(): array
     {
         return [
-            'deliver' => new DeliverJob($this->dispatcher(), $this->sender(), $this->hookSender, new EventRecorder($this->endpoints, $this->events)),
+            'deliver' => new DeliverJob($this->dispatcher(), $this->sender()),
             'send-test' => new SendTestJob($this->endpoints, $this->deliveries, $this->site, $this->sender()),
             'prune' => new PruneJob($this->deliveries, $this->settings),
         ];
