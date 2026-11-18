@@ -447,40 +447,6 @@
                                     "type": "types",
                                     "label": "Only these content types",
                                     "description": "Leave empty for every type."
-                                },
-                                {
-                                    "key": "categories",
-                                    "type": "text",
-                                    "label": "Only these categories",
-                                    "maxLength": 500,
-                                    "description": "Category slugs, separated by commas. Leave empty for every category."
-                                },
-                                {
-                                    "key": "tags",
-                                    "type": "text",
-                                    "label": "Only these tags",
-                                    "maxLength": 500,
-                                    "description": "Tag slugs, separated by commas. Leave empty for every tag."
-                                },
-                                {
-                                    "key": "fields",
-                                    "type": "multiselect",
-                                    "label": "Item fields to send",
-                                    "description": "Leave empty to send them all.",
-                                    "options": {
-                                        "id": "ID",
-                                        "type": "Content type",
-                                        "title": "Title",
-                                        "url": "Address",
-                                        "status": "Status",
-                                        "language": "Language",
-                                        "published_at": "Published date",
-                                        "scheduled_for": "Scheduled date",
-                                        "author": "Author's name",
-                                        "excerpt": "Excerpt",
-                                        "featured_image": "Featured image address",
-                                        "terms": "Categories and tags"
-                                    }
                                 }
                             ]
                         },

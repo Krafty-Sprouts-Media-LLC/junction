@@ -48,9 +48,6 @@ beforeEach(function (): void {
         'events' => ['item.published'],
         'other_events' => '',
         'types' => [],
-        'categories' => '',
-        'tags' => '',
-        'fields' => [],
         'secret' => '',
         'send_test' => false,
         ...$overrides,
@@ -70,13 +67,12 @@ it('saves a new endpoint with a fresh secret, kept encrypted', function (): void
 it('keeps a secret typed in, and splits typed lists', function (): void {
     $saved = $this->area->save('endpoint', null, ($this->form)([
         'secret' => 'my-own-made-up-secret-for-tests',
-        'categories' => 'News, Tech ,',
         'other_events' => 'shop.order_placed, *',
     ]), $this->context);
 
     $endpoint = (new EndpointStore)->find($saved->id);
     expect($endpoint->secret)->toBe('my-own-made-up-secret-for-tests')
-        ->and($endpoint->categories)->toBe(['news', 'tech'])
+        ->and($endpoint->categories)->toBe([])
         ->and($endpoint->otherEvents)->toBe(['shop.order_placed', '*']);
 });
 

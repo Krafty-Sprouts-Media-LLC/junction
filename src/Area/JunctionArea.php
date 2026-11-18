@@ -20,7 +20,6 @@ use KraftySprouts\Junction\Endpoints\Endpoint;
 use KraftySprouts\Junction\Endpoints\SecretBox;
 use KraftySprouts\Junction\Events\EventNames;
 use KraftySprouts\Junction\Junction;
-use KraftySprouts\Junction\Payload\PayloadBuilder;
 use KraftySprouts\Junction\Storage\DeliveryStore;
 use KraftySprouts\Junction\Storage\EndpointStore;
 use KraftySprouts\Junction\Storage\EventStore;
@@ -141,9 +140,6 @@ final readonly class JunctionArea implements PluginArea
                 'events' => $endpoint->events,
                 'other_events' => implode(', ', $endpoint->otherEvents),
                 'types' => $endpoint->types,
-                'categories' => implode(', ', $endpoint->categories),
-                'tags' => implode(', ', $endpoint->tags),
-                'fields' => $endpoint->fields,
                 'secret' => $endpoint->secret,
                 'send_test' => false,
             ];
@@ -296,9 +292,10 @@ final readonly class JunctionArea implements PluginArea
             'events' => $events,
             'other_events' => $other,
             'types' => array_values(array_map(strval(...), (array) ($values['types'] ?? $current->types ?? []))),
-            'categories' => Ids::splitList($values['categories'] ?? $current->categories ?? []),
-            'tags' => Ids::splitList($values['tags'] ?? $current->tags ?? []),
-            'fields' => array_values(array_intersect(array_map(strval(...), (array) ($values['fields'] ?? $current->fields ?? [])), PayloadBuilder::ITEM_FIELDS)),
+            // The form offers no field picker or category and tag filters until 1.1 (ROADMAP.md); the engine keeps them.
+            'categories' => $current->categories ?? [],
+            'tags' => $current->tags ?? [],
+            'fields' => $current->fields ?? [],
             'secret' => $secret === '' ? SecretBox::generate() : mb_substr($secret, 0, 128),
         ];
     }
