@@ -63,7 +63,7 @@ Each feature of the brief, marked:
 | Retries with growing waits, up to a limit | Built: 1 minute, 5 minutes, 30 minutes, 2 hours, then 6 hours; 6 tries by default; the limit is a setting |
 | Marked failed when the tries are used | Built |
 | An endpoint paused after repeated failures | Built: 10 in a row by default; saving or turning on the endpoint starts it |
-| A notice to administrators | Built through Teme's notices. It reaches the administrator the work runs as, since a plugin can't list everyone who manages plugins (FINDINGS W2). |
+| A notice to administrators | Built through Teme's notices, **not verified**: the send raises no error, but no notice appeared in a test (FINDINGS K4), so it needs checking on a real site. It goes to the administrator the work runs as, since a plugin can't list everyone who manages plugins (FINDINGS W2). The pause itself is tested. |
 | Deliveries run as the administrator who enabled Junction | Teme already does this (scheduled jobs) |
 
 ## 6. The delivery log

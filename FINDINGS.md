@@ -14,11 +14,11 @@ Found by building against `teme-dev` at Teme `main` (contracts 1.0.0, the site r
 
 **H4. The test command in the guide isn't the one that worked.** *Expected:* the handbook's Testing a plugin or theme page says `php artisan test ../my-plugin/tests`. *Did:* ran Pest from teme-dev with Junction's own `phpunit.xml` (`php ../teme-dev/vendor/bin/pest --configuration=phpunit.xml`), because I needed my own database and bootstrap. I did not try `artisan test`, so this is a gap in what I checked, not a proven fault. Two things I did find: a plugin's `tests/Pest.php` wasn't loaded this way, and `uses(...)->in('Feature')` didn't match on Windows paths, so each test file names the kit's test case itself, as the guide's first-line rule says. *Suggest:* say how a plugin runs against a test database of its own.
 
-**H5. The notice button's route parameter isn't named.** *Expected:* the handbook's Notices from plugins page says a button may lead to `plugins.area.show` with the plugin's own code. *Happened:* it doesn't say what the parameter is called. *Did:* guessed `code`. *Unverified:* the notice is sent inside a try/catch, so a wrong name would be swallowed. It is on ROADMAP.md's task list to check on the dev site.
+**H5. The notice button's route parameter isn't named.** *Expected:* the handbook's Notices from plugins page says a button may lead to `plugins.area.show` with the plugin's own code. *Happened:* it doesn't say what the parameter is called. *Did:* guessed `code`. *Partly checked:* with the try/catch lifted, the send raised no error, so `code` wasn't refused. Whether the notice arrives, and whether its button opens Junction's area, is unchecked (K4).
 
 **H6. An area form's `terms` field holds term IDs; the contracts speak slugs.** *Expected:* a way to pick categories and tags in a form and compare them with an item's terms. *Happened:* `ItemSnapshot::$terms` is slugs by taxonomy; the area's `terms` field stores IDs, and no contract maps one to the other. *Did:* in 1.0.0 there is no category or tag filter (planned, 1.1, ROADMAP.md).
 
-**H7. The code standards page and the brief disagree with the person who started this work.** The handbook's the handbook's Code standards page recommends no file headers and `@since` only for what a package publishes. The instruction was to use headers and `@since` everywhere. Nothing is wrong in the handbook; recorded so the choice is traceable (DECISIONS 1).
+**H7. The code standards page and the brief disagree with the person who started this work.** The handbook's Code standards page recommends no file headers and `@since` only for what a package publishes. The instruction was to use headers and `@since` everywhere. Nothing is wrong in the handbook; recorded so the choice is traceable (DECISIONS 1).
 
 ## Testing kit
 
@@ -27,6 +27,8 @@ Found by building against `teme-dev` at Teme `main` (contracts 1.0.0, the site r
 **K2. A plugin's area can't be reached from a test.** The kit has no way to open an area page or call the area as core would. *Did:* called `JunctionArea` directly (DECISIONS 18). Core's checks on top of it (permissions, the manifest's field types and limits) aren't covered by Junction's tests.
 
 **K3. Only content hooks can be fired.** The kit has `publish`, `unpublish` and `trash`. Comments, media, scheduling, restore and delete have no helper. *Did:* hand real hook objects to Junction's listeners through a fake `Hooks`. That tests Junction's mapping, not that Teme fires those hooks when it should.
+
+**K4. A plugin's notices can't be checked from a test.** The kit has no way to read the notices a plugin sent. *Happened:* when an endpoint is paused, Junction calls `Notices::send()` with its own kind. The call raised no error (with Junction's own error handling lifted), yet no mail was captured and the only inbox row was Teme's own "job finished" entry, none of Junction's. *Unknown:* whether delivery is held until a commit that a test's wrapping transaction never reaches, or whether something else stops it. *Did:* nothing more; the pause itself is tested, the notice is not. It must be checked on the dev site (ROADMAP.md tasks).
 
 ## Walls
 
