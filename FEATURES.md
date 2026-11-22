@@ -36,7 +36,7 @@ Each feature of the brief, marked:
 
 | Feature | State |
 |---|---|
-| JSON, documented for each event | Built (README.md) |
+| JSON, documented for each event | Built; its documentation is **not written yet** (README.md is still to do, REPORT.md) |
 | An item's id, type, title, address, status, language, dates, terms | Built |
 | An item's excerpt | Built: its excerpt field, or the first 55 words of its body |
 | The author's name | Built for items that credit someone; otherwise `null`. Teme doesn't give the item's owner to plugins (FINDINGS W5). |
@@ -52,7 +52,7 @@ Each feature of the brief, marked:
 | A secret for each endpoint | Built, kept encrypted with the site's key |
 | A timestamp and an HMAC-SHA256 signature on every delivery | Built |
 | A delivery id, the same on every retry, so receivers can ignore duplicates | Built |
-| Verification examples for Make, Zapier and n8n | Built (README.md) |
+| Verification examples for Make, Zapier and n8n | **Not written yet**: README.md is still to do (REPORT.md). The signing itself is built and tested. |
 
 ## 5. Delivery
 
@@ -79,7 +79,7 @@ Each feature of the brief, marked:
 
 | Feature | State |
 |---|---|
-| Apps into Teme | Teme already does this: the management API at `/api/manage/v1`. Junction builds no inbound webhook. The README shows how a Make or Zapier scenario uses it. |
+| Apps into Teme | Teme already does this: the management API at `/api/manage/v1`. Junction builds no inbound webhook. The README, still to be written, will show how a Make or Zapier scenario uses it. |
 
 ## 8. Import from WordPress
 
