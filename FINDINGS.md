@@ -6,7 +6,7 @@ Found by building against `teme-dev` at Teme `main` (contracts 1.0.0, the site r
 
 ## Handbook
 
-**H1. `hostsFrom` alone isn't enough to enable a plugin.** *Expected:* the handbook's Plugin settings and secrets page says a plugin that lets people type in the service's address lists the setting under `hostsFrom` and needs the `http` capability. *Happened:* enabling failed with "It asks for http but names no hosts." *Did:* named one real host, `hooks.zapier.com`, under `hosts` as well. *Suggest:* either accept `hostsFrom` alone, or say that `hosts` must be non-empty.
+**H1. `hostsFrom` alone isn't enough to enable a plugin.** *Expected:* the handbook's Plugin settings and secrets page says a plugin that lets people type in the service's address lists the setting under `hostsFrom` and needs the `http` capability. *Happened:* enabling failed with "It asks for http but names no hosts." *Did:* declared one placeholder host, `junction.invalid` (a reserved name that never resolves), under `hosts`, so no real host is agreed for the administrator. The administrator sees that one odd line on the consent screen. *Suggest:* either accept `hostsFrom` alone, or say that `hosts` must be non-empty.
 
 **H2. The area's block rules aren't in the guide.** *Expected:* the handbook's A plugin's own area page lists the blocks and what each declares. *Happened:* Teme refused the manifest for two things the guide doesn't say: every block needs an `id` of 2 to 40 lower-case letters, digits and hyphens starting with a letter, and a figures block holds 1 to 4 figures. *Did:* added ids, and split five figures into two blocks. *Suggest:* put both rules in the guide.
 
@@ -22,7 +22,7 @@ Found by building against `teme-dev` at Teme `main` (contracts 1.0.0, the site r
 
 ## Testing kit
 
-**K1. `changeSettings()` can't agree to a new host.** *Expected:* saving a plugin's `urls` setting, as an administrator does, with a way to say yes. *Happened:* the save was refused with "Agree to let Junction connect to hooks.example.com, or remove them." and the kit has no argument to tick the box. *Did:* all tests use the one host the manifest names, which is agreed at enable. So there is no test of the real agree step for a new host.
+**K1. `changeSettings()` can't agree to a new host.** *Expected:* saving a plugin's `urls` setting, as an administrator does, with a way to say yes. *Happened:* the save was refused with "Agree to let Junction connect to hooks.example.com, or remove them." and the kit has no argument to tick the box. *Did:* all tests use the one placeholder host the manifest names, which is agreed at enable. So there is no test of the real agree step for a new host.
 
 **K2. A plugin's area can't be reached from a test.** The kit has no way to open an area page or call the area as core would. *Did:* called `JunctionArea` directly (DECISIONS 18). Core's checks on top of it (permissions, the manifest's field types and limits) aren't covered by Junction's tests.
 

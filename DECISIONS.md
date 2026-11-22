@@ -36,7 +36,7 @@ Each decision, and why. Made without stopping to ask, as the brief said.
 
 **13. Addresses are agreed in Settings, endpoints use agreed hosts.** Teme asks the administrator to agree to a new host when they save a `urls` setting named in `hostsFrom`. Area forms can't do that, so an endpoint's address must name a host already listed under Settings › Junction › Endpoint addresses, and the form says so when it doesn't. That is two steps for the administrator and always an explicit yes.
 
-**14. `hooks.zapier.com` is also named in `hosts`.** Teme refused to enable a plugin with `http` and `hostsFrom` but no `hosts` (FINDINGS H1). Zapier is the most common webhook host, so it is agreed once at enable, and a Zapier endpoint needs no second step. The test suite depends on it too (FINDINGS K1).
+**14. No real host is agreed for the administrator; one placeholder is declared because Teme requires one.** Teme refuses to enable a plugin that asks for `http` with `hostsFrom` and no `hosts` (FINDINGS H1). Junction therefore declares one host, `junction.invalid`, a reserved name that never resolves, so it can never carry traffic. The administrator sees it on the consent screen and in the README; every real destination, Zapier's included, is agreed to by the administrator under Settings › Junction. The placeholder is never counted as an agreed endpoint host. The tests use it as their one host, since the kit can't agree to a new one (FINDINGS K1).
 
 ## Notices
 

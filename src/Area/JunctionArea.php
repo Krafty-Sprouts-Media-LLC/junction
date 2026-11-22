@@ -53,13 +53,6 @@ final readonly class JunctionArea implements PluginArea
     /** The delivery try record's id. @since 1.0.0 */
     public const string ATTEMPT = 'attempt';
 
-    /**
-     * The hosts the manifest names, agreed to when Junction is enabled.
-     *
-     * @since 1.0.0
-     */
-    public const array MANIFEST_HOSTS = ['hooks.zapier.com'];
-
     /** @since 1.0.0 */
     public function __construct(
         private EndpointStore $endpoints,
@@ -289,8 +282,9 @@ final readonly class JunctionArea implements PluginArea
     }
 
     /**
-     * The hosts agreed to: the manifest's, and those named in Junction's
-     * endpoint addresses setting.
+     * The hosts the administrator agreed to: those named in Junction's
+     * endpoint addresses setting. The manifest's placeholder host is never
+     * one of them.
      *
      * @return list<string>
      *
@@ -298,7 +292,7 @@ final readonly class JunctionArea implements PluginArea
      */
     private function agreedHosts(): array
     {
-        $hosts = self::MANIFEST_HOSTS;
+        $hosts = [];
 
         foreach ($this->settings->stringList(Junction::SETTINGS, 'endpoint_urls') as $url) {
             $host = strtolower((string) parse_url(trim($url), PHP_URL_HOST));

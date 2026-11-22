@@ -16,7 +16,7 @@ Each feature of the brief, marked:
 | Choose which events it receives | Built |
 | Filter by content type | Built |
 | Filter by category or tag | Planned, 1.1 |
-| The administrator agrees to each outside host | Teme already does this (`hostsFrom`): an address is listed under Settings › Junction, where saving a new host asks for agreement. The endpoint form accepts only a host already agreed to. Teme's area forms can't take `hostsFrom` themselves, so that is two steps instead of one (FINDINGS W7). |
+| The administrator agrees to each outside host | Teme already does this (`hostsFrom`): an address is listed under Settings › Junction, where saving a new host asks for agreement. Every real host is agreed by the administrator: none is agreed in advance. The endpoint form accepts only a host already agreed to under Settings. Teme makes a plugin name one fixed host to enable it, so Junction names an unreachable placeholder, `junction.invalid` (FINDINGS H1). Teme's area forms can't take `hostsFrom` themselves, so that is two steps instead of one (FINDINGS W7). |
 | A secret for each endpoint, made by Junction | Built |
 | Pause, copy and delete endpoints | Built |
 

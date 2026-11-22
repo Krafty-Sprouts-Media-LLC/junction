@@ -29,17 +29,18 @@ use Teme\Testing\PluginUnderTest;
 final class Junctions
 {
     /**
-     * The test endpoint's host: the one host Junction's manifest names, the
-     * only one a test can agree to, since the kit's changeSettings() can't
+     * The test endpoint's host: the placeholder host Junction's manifest
+     * names, which Teme requires and which can never be reached. It is the
+     * only host a test can agree to, since the kit's changeSettings() can't
      * tick the box that agrees to a new host (FINDINGS K1). The kit's fake
      * answers every call, so nothing is ever sent there.
      *
      * @since 1.0.0
      */
-    public const string HOST = 'hooks.zapier.com';
+    public const string HOST = 'junction.invalid';
 
     /** The test endpoint's address, a made-up path. @since 1.0.0 */
-    public const string URL = 'https://hooks.zapier.com/hooks/catch/0/junction-test';
+    public const string URL = 'https://junction.invalid/hooks/junction-test';
 
     /** A made-up signing secret, never a real one. @since 1.0.0 */
     public const string SECRET = 'jcsec_test_not_a_real_secret_0000000000000000';
